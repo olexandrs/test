@@ -16,7 +16,6 @@ public class Weather {
     private List<String> datesList = new ArrayList<String>();
     private List<Integer> searchList = new ArrayList<Integer>();
     private List<Integer> allList = new ArrayList<Integer>();
-    //private List<Integer> revertList = new ArrayList<Integer>();
     private ArrayList<ArrayList<Integer>> globalResult = new ArrayList<ArrayList<Integer>>();
     private Integer currentDelta = maxDelta;
     private Integer searchSize = 14;
@@ -26,7 +25,6 @@ public class Weather {
     public void find() throws IOException {
         initBufferedWriter();
         readAllDataFromFile();
-     //   revertData();
         readDatesFromFile();
         for(int i = 0; i < allList.size() - searchSize; i++) {
             initSearchList(i);
@@ -34,13 +32,6 @@ public class Weather {
         }
         closeBufferedWriter();
     }
-/*
-    private void revertData() {
-        for(int i = allList.size() - 1; i >= 0; i--) {
-            revertList.add(allList.get(i));
-        }
-    }
-*/
     private void search() throws IOException {
         downSearch();
         if(globalResult.size() > 1) {
@@ -156,10 +147,3 @@ public class Weather {
     }
 
 }
-
-
-/*
-        for (Integer integer : week) {
-            System.out.println(integer);
-        }
-*/

@@ -28,7 +28,6 @@ public class Table {
         table.setDisplayName("Test");
         CTTable cttable = table.getCTTable();
 
-
         //Set which area the table should be placed in
         AreaReference reference = new AreaReference(new CellReference(0, 0),
                 new CellReference(2,2));
@@ -55,7 +54,7 @@ public class Table {
                 if(i == 0) {
                     cell.setCellValue("Column"+j);
                 } else {
-                    cell.setCellValue(j);
+                    cell.setCellValue("" + j);
                 }
             }
         }
