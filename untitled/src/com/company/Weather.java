@@ -19,32 +19,28 @@ public class Weather {
     private ArrayList<ArrayList<Integer>> globalResult = new ArrayList<ArrayList<Integer>>();
     private Integer currentDelta = maxDelta;
     private Integer searchSize = 14;
-    BufferedWriter outputWriter;
+    private TextFile file = new TextFile();
 
 
     public void find() throws IOException {
-        initBufferedWriter();
-        readAllDataFromFile();
-        readDatesFromFile();
+
+        file.initBufferedWriter();
+        file.readAllDataFromFile(allList);
+        file.readDatesFromFile(datesList);
+
         for(int i = 0; i < allList.size() - searchSize; i++) {
             initSearchList(i);
             search();
         }
-        closeBufferedWriter();
+
+        file.closeBufferedWriter();
     }
+
     private void search() throws IOException {
         downSearch();
         if(globalResult.size() > 1) {
-
-
-            outputWriter.newLine();
-            outputWriter.write("   --- WEEK start ---   ");
-            outputWriter.newLine();
-            print();
-            outputWriter.write("   --- WEEK end ---   ");
-            outputWriter.newLine();
+            file.print(datesList, globalResult);
         }
-
     }
 
     private void initSearchList(int start) {
@@ -86,64 +82,4 @@ public class Weather {
             }
         }
     }
-
-    private void readDatesFromFile() throws IOException {
-
-        FileReader fileReader = new FileReader("dates.txt");
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
-        String line;
-        while ((line = bufferedReader.readLine()) != null) {
-            datesList.add(line);
-        }
-        bufferedReader.close();
-
-    }
-
-
-    private void readAllDataFromFile() throws IOException {
-        String myDir = System.getProperty("user.dir");
-        File file = new File( myDir + "/allDate.txt" );
-
-        Scanner scanner = new Scanner(file);
-
-        while(scanner.hasNextInt()){
-            allList.add(scanner.nextInt());
-        }
-    }
-
-    private void print() throws IOException {
-        if(globalResult.size() == 1) {
-            return;
-        }
-        for(ArrayList<Integer> resultList : globalResult) {
-/*
-            outputWriter.write(datesList.get(resultList.get(0)));
-            outputWriter.newLine();
-            outputWriter.write(datesList.get(resultList.get(searchSize - 1)));
-            outputWriter.newLine();
-            outputWriter.newLine();
-*/
-
-            for (Integer integer : resultList) {
-                //outputWriter.write(Integer.toString(integer));
-               // outputWriter.write("   ---   ");
-                outputWriter.write(datesList.get(integer));
-                outputWriter.newLine();
-            }
-            outputWriter.newLine();
-            outputWriter.newLine();
-
-        }
-    }
-
-    private void initBufferedWriter() throws IOException {
-        String myDir = System.getProperty("user.dir");
-        outputWriter = new BufferedWriter(new FileWriter(myDir + "/result.txt"));
-    }
-
-    private void closeBufferedWriter() throws IOException {
-        outputWriter.flush();
-        outputWriter.close();
-    }
-
 }

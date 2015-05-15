@@ -6,10 +6,10 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-       // Weather weather = new Weather();
-       // weather.find();
-        Table table = new Table();
-        table.createTable();
+        Weather weather = new Weather();
+        weather.find();
+       // Table table = new Table();
+       // table.createTable();
 	// write your code here
     }
 }
