@@ -22,13 +22,23 @@ public class Weather {
     private TextFile file = new TextFile();
 
 
+   //  private Integer startSearch = 0;
+  //   private Integer endSearch = 669;
+    private Integer startSearch = 683;
+    private Integer endSearch = 1413;
+ //   private Integer startList = 669;
+ //   private Integer endList = 1399;
+    private Integer startList = 0;
+    private Integer endList = 669;
+
+
     public void find() throws IOException {
 
         file.initBufferedWriter();
         file.readAllDataFromFile(allList);
         file.readDatesFromFile(datesList);
 
-        for(int i = 0; i < allList.size() - searchSize; i++) {
+        for(int i = startSearch; i < endSearch; i++) {
             initSearchList(i);
             search();
         }
@@ -36,6 +46,56 @@ public class Weather {
         file.closeBufferedWriter();
     }
 
+    private void search() throws IOException {
+        downSearch();
+        if(globalResult.size() > 1) {
+            file.print(datesList, globalResult);
+        }
+    }
+
+    private void downSearch() {
+        globalResult = new ArrayList<ArrayList<Integer>>();
+        ArrayList<Integer> resultList = new ArrayList<Integer>();
+        for (int i = startList; i < endList; i++) {
+            for (int j = 0; j < searchList.size(); j++) {
+                if (i + j > endList - 1) {
+                    break;
+                }
+                Integer fromAll = allList.get(i + j);
+                Integer fromSearch = searchList.get(j);
+                Integer newDelta = fromAll - fromSearch;
+                if (currentDelta == maxDelta) {
+                    currentDelta = newDelta;
+                    resultList.add(i + j);
+                    continue;
+                }
+                if (newDelta - shift <= currentDelta && currentDelta <= newDelta + shift) {
+                    resultList.add(i + j);
+                } else {
+                    resultList.clear();
+                    currentDelta = maxDelta;
+                    break;
+                }
+                if (j >= searchList.size() - 1) {
+                    globalResult.add(resultList);
+                    resultList = new ArrayList<Integer>();
+                    currentDelta = maxDelta;
+                    break;
+                }
+            }
+        }
+    }
+
+    private void initSearchList(int start) {
+        searchList = new ArrayList<Integer>();
+        for(int i = 0; i < searchSize; i++ ) {
+            searchList.add(allList.get(start + i));
+        }
+    }
+
+
+
+/*
     private void search() throws IOException {
         downSearch();
         if(globalResult.size() > 1) {
@@ -82,4 +142,5 @@ public class Weather {
             }
         }
     }
+    */
 }
