@@ -2,6 +2,8 @@ package com.company;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
+
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellReference;
@@ -19,9 +21,13 @@ import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTTableColumns;
  */
 public class Table {
 
-    public void createTable() throws  IOException {
-        Workbook wb = new XSSFWorkbook();
-        XSSFSheet sheet = (XSSFSheet) wb.createSheet();
+    private XSSFSheet sheet;
+    private CTTableColumns columns;
+    private Workbook wb;
+
+    public void Table() {
+        wb = new XSSFWorkbook();
+        sheet = (XSSFSheet) wb.createSheet();
 
         //Create
         XSSFTable table = sheet.createTable();
@@ -36,30 +42,32 @@ public class Table {
         cttable.setName("Test");
         cttable.setTotalsRowCount(1);
 
-        CTTableColumns columns = cttable.addNewTableColumns();
-        columns.setCount(3);
+        columns = cttable.addNewTableColumns();
+        columns.setCount(100);
+    }
+
+    public void fillTable(List<String> result, int searchSize, int cont) throws  IOException {
+
         CTTableColumn column;
         XSSFRow row;
         XSSFCell cell;
-        for(int i=0; i<3; i++) {
+        for(int i=0; i< searchSize; i++) {
             //Create column
             column = columns.addNewTableColumn();
             column.setName("Column");
-            column.setId(i+1);
+            column.setId(cont + 1);
             //Create row
             row = sheet.createRow(i);
-            for(int j=0; j<3; j++) {
+            for(int j = 0; j < result.size(); j++) {
                 //Create cell
                 cell = row.createCell(j);
-                if(i == 0) {
-                    cell.setCellValue("Column"+j);
-                } else {
-                    cell.setCellValue("" + j);
-                }
+                cell.setCellValue(result.get(i));
             }
         }
+    }
 
-        FileOutputStream fileOut = new FileOutputStream("ooxml-table.xlsx");
+    public void save(String name) throws IOException {
+        FileOutputStream fileOut = new FileOutputStream(name);
         wb.write(fileOut);
         fileOut.close();
     }

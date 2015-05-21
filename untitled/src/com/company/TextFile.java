@@ -37,9 +37,6 @@ public class TextFile {
     }
 
     public void print(List<String> datesList, ArrayList<ArrayList<Integer>> globalResult) throws IOException {
-        if(globalResult.size() == 1) {
-            return;
-        }
         outputWriter.newLine();
         outputWriter.write("   --- WEEK start ---   ");
         outputWriter.newLine();
