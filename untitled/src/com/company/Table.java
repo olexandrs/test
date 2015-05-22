@@ -2,7 +2,7 @@ package com.company;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.AreaReference;
@@ -24,13 +24,16 @@ public class Table {
     private XSSFSheet sheet;
     private CTTableColumns columns;
     private Workbook wb;
+    private int count;
 
-    public void Table() {
+    public Table() {
+        count = 0;
         wb = new XSSFWorkbook();
         sheet = (XSSFSheet) wb.createSheet();
 
         //Create
         XSSFTable table = sheet.createTable();
+        sheet.setDefaultColumnWidth(23);
         table.setDisplayName("Test");
         CTTable cttable = table.getCTTable();
 
@@ -40,28 +43,32 @@ public class Table {
         cttable.setRef(reference.formatAsString());
         cttable.setId(1);
         cttable.setName("Test");
-        cttable.setTotalsRowCount(1);
+        cttable.setTotalsRowCount(3000);
 
         columns = cttable.addNewTableColumns();
-        columns.setCount(100);
+        columns.setCount(30);
     }
 
-    public void fillTable(List<String> result, int searchSize, int cont) throws  IOException {
+    public void fillTable(ArrayList<ArrayList<String>> result, int searchSize) throws  IOException {
 
         CTTableColumn column;
         XSSFRow row;
         XSSFCell cell;
+        sheet.createRow(count + 1);
+        count++;
         for(int i=0; i< searchSize; i++) {
             //Create column
             column = columns.addNewTableColumn();
             column.setName("Column");
-            column.setId(cont + 1);
+            column.setId(count + 1);
             //Create row
-            row = sheet.createRow(i);
+            row = sheet.createRow(count + 1);
+            count++;
             for(int j = 0; j < result.size(); j++) {
                 //Create cell
                 cell = row.createCell(j);
-                cell.setCellValue(result.get(i));
+                ArrayList<String> res = result.get(j);
+                cell.setCellValue(res.get(i));
             }
         }
     }

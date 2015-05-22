@@ -8,8 +8,7 @@ public class Main {
 
         Weather weather = new Weather();
         weather.find();
-       // Table table = new Table();
-       // table.createTable();
+
 	// write your code here
     }
 }

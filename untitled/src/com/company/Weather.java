@@ -15,6 +15,7 @@ public class Weather {
     private Integer searchSize = 14;
 
     private TextFile file = new TextFile();
+    private Table table = new Table();
 
     private List<String> datesList = new ArrayList<String>();
     private List<Integer> allList = new ArrayList<Integer>();
@@ -27,10 +28,10 @@ public class Weather {
     private Integer endSearch = 669;
 //    private Integer startSearch = 683;
 //    private Integer endSearch = 1413;
-//    private Integer startList = 669;
-//    private Integer endList = 1399;
-    private Integer startList = 7974;
-    private Integer endList = 8243;
+    private Integer startList = 0;
+    private Integer endList = 670;
+//    private Integer startList = 7974;
+//    private Integer endList = 8243;
 
 
     public void find() throws IOException {
@@ -44,15 +45,28 @@ public class Weather {
             initSearchList(i);
             search();
         }
-
+        table.save("test.xlsx");
         file.closeBufferedWriter();
     }
 
     private void search() throws IOException {
         downSearch();
         if(globalResult.size() > 1) {
-            file.print(datesList, globalResult);
+            table.fillTable(prepareResult(), searchSize);
         }
+    }
+
+    private ArrayList<ArrayList<String>> prepareResult() {
+        ArrayList<ArrayList<String>> resultAll = new ArrayList<ArrayList<String>>();
+        ArrayList<String> resultOne;
+        for(ArrayList<Integer> resultList : globalResult) {
+            resultOne = new ArrayList<String>();
+            for (Integer integer : resultList) {
+                resultOne.add(datesList.get(integer));
+            }
+            resultAll.add(resultOne);
+        }
+        return resultAll;
     }
 
     private void downSearch() {
