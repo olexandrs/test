@@ -22,31 +22,69 @@ public class Weather {
     private ArrayList<Integer> searchList = new ArrayList<Integer>();
     private ArrayList<Integer> searchListNumber = new ArrayList<Integer>();
     private ArrayList<ArrayList<Integer>> globalResult = new ArrayList<ArrayList<Integer>>();
+    private ArrayList<Integer> startDays = new ArrayList<Integer>();
+    private ArrayList<Integer> endDays = new ArrayList<Integer>();
+
+    private Integer startYear = 2004;
+    private Integer endYear = 2004;
 
 
-    private Integer startSearch = 0;
-    private Integer endSearch = 669;
-//    private Integer startSearch = 683;
-//    private Integer endSearch = 1413;
-    private Integer startList = 0;
-    private Integer endList = 670;
-//    private Integer startList = 7974;
-//    private Integer endList = 8243;
+    private Integer startSearch;
+    private Integer endSearch;
+    private Integer startList;
+    private Integer endList;
+
+
+    private void initStartAndEndDate() {
+        startDays.add(0);
+        startDays.add(670);
+        startDays.add(1400);
+        startDays.add(2130);
+        startDays.add(2860);
+        startDays.add(3592);
+        startDays.add(4322);
+        startDays.add(5052);
+        startDays.add(5782);
+        startDays.add(6514);
+        startDays.add(7244);
+        startDays.add(7974);
+
+        endDays.add(669);
+        endDays.add(1399);
+        endDays.add(2129);
+        endDays.add(2859);
+        endDays.add(3591);
+        endDays.add(4321);
+        endDays.add(5051);
+        endDays.add(5781);
+        endDays.add(6513);
+        endDays.add(7243);
+        endDays.add(7973);
+        endDays.add(8243);
+    }
 
 
     public void find() throws IOException {
 
-        file.initBufferedWriter();
-
+        initStartAndEndDate();
         file.readAllDataFromFile(allList);
         file.readDatesFromFile(datesList);
 
-        for(int i = startSearch; i < endSearch - searchSize; i++) {
-            initSearchList(i);
-            search();
+        for(int first = 0; first < 1; first++) {
+            for(int second = 0 + first; second < 1; second++) {
+                table = new Table();
+                startSearch = startDays.get(first);
+                endSearch = endDays.get(first);
+                startList = startDays.get(second);
+                endList = endDays.get(second);
+                for (int i = startSearch; i < endSearch - searchSize; i++) {
+                    initSearchList(i);
+                    search();
+                }
+                table.save((startYear + first) + " - " + (endYear + second) + ".xlsx");
+            }
         }
-        table.save("test.xlsx");
-        file.closeBufferedWriter();
+    //    file.closeBufferedWriter();
     }
 
     private void search() throws IOException {
