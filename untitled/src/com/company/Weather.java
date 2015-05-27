@@ -21,7 +21,10 @@ public class Weather {
     private List<Integer> allList = new ArrayList<Integer>();
     private ArrayList<Integer> searchList = new ArrayList<Integer>();
     private ArrayList<Integer> searchListNumber = new ArrayList<Integer>();
+    private ArrayList<Integer> upSearchList = new ArrayList<Integer>();
+    private ArrayList<Integer> upSearchListNumber = new ArrayList<Integer>();
     private ArrayList<ArrayList<Integer>> globalResult = new ArrayList<ArrayList<Integer>>();
+    private ArrayList<ArrayList<Integer>> upGlobalResult = new ArrayList<ArrayList<Integer>>();
     private ArrayList<Integer> startDays = new ArrayList<Integer>();
     private ArrayList<Integer> endDays = new ArrayList<Integer>();
 
@@ -70,8 +73,8 @@ public class Weather {
         file.readAllDataFromFile(allList);
         file.readDatesFromFile(datesList);
 
-        for(int first = 0; first < 1; first++) {
-            for(int second = 0 + first; second < 1; second++) {
+        for(int first = 0; first < 12; first++) {
+            for(int second = 0 + first; second < 12; second++) {
                 table = new Table();
                 startSearch = startDays.get(first);
                 endSearch = endDays.get(first);
@@ -90,11 +93,15 @@ public class Weather {
     private void search() throws IOException {
         downSearch();
         if(globalResult.size() > 1) {
-            table.fillTable(prepareResult(), searchSize);
+            table.fillTable(prepareResult(globalResult), searchSize);
+        }
+        upSearch();
+        if(upGlobalResult.size() > 1) {
+            table.fillTable(prepareResult(upGlobalResult), searchSize);
         }
     }
 
-    private ArrayList<ArrayList<String>> prepareResult() {
+    private ArrayList<ArrayList<String>> prepareResult(ArrayList<ArrayList<Integer>> globalResult) {
         ArrayList<ArrayList<String>> resultAll = new ArrayList<ArrayList<String>>();
         ArrayList<String> resultOne;
         for(ArrayList<Integer> resultList : globalResult) {
@@ -105,6 +112,50 @@ public class Weather {
             resultAll.add(resultOne);
         }
         return resultAll;
+    }
+
+    private void upSearch() {
+        upGlobalResult = new ArrayList<ArrayList<Integer>>();
+        ArrayList<Integer> resultList = new ArrayList<Integer>();
+        ArrayList<Integer> values = new ArrayList<Integer>();
+        upGlobalResult.add(upSearchListNumber);
+        for (int i = startList; i < endList; i++) {
+            for (int j = 0; j < upSearchList.size(); j++) {
+                if (i + j > endList - 1) {
+                    break;
+                }
+                Integer fromAll = allList.get(i + j);
+                Integer fromSearch = upSearchList.get(j);
+                Integer newDelta = fromAll - fromSearch;
+                if (currentDelta == maxDelta) {
+                    currentDelta = newDelta;
+                    values.add(allList.get(i + j));
+                    resultList.add(i + j);
+                    continue;
+                }
+                if (newDelta - shift <= currentDelta && currentDelta <= newDelta + shift) {
+                    resultList.add(i + j);
+                    values.add(allList.get(i + j));
+                } else {
+                    resultList.clear();
+                    values.clear();
+                    currentDelta = maxDelta;
+                    break;
+                }
+                if (j >= upSearchList.size() - 1) {
+                    if(needToAdd(values, upSearchList)) {
+                        upGlobalResult.add(resultList);
+                    }
+                    resultList = new ArrayList<Integer>();
+                    values = new ArrayList<Integer>();
+                    currentDelta = maxDelta;
+                    break;
+                }
+            }
+        }
+        if(upGlobalResult.size() == 1) {
+            upGlobalResult = new ArrayList<ArrayList<Integer>>();
+        }
     }
 
     private void downSearch() {
@@ -136,7 +187,7 @@ public class Weather {
                     break;
                 }
                 if (j >= searchList.size() - 1) {
-                    if(needToAdd(values)) {
+                    if(needToAdd(values, searchList)) {
                         globalResult.add(resultList);
                     }
                     resultList = new ArrayList<Integer>();
@@ -151,7 +202,7 @@ public class Weather {
         }
     }
 
-    private boolean needToAdd(ArrayList<Integer> results) {
+    private boolean needToAdd(ArrayList<Integer> results, ArrayList<Integer> searchList) {
         for(int i = 0; i < results.size(); i++) {
             if(results.get(i) != searchList.get(i)) {
                 return true;
@@ -163,9 +214,15 @@ public class Weather {
     private void initSearchList(int start) {
         searchList = new ArrayList<Integer>();
         searchListNumber = new ArrayList<Integer>();
+        upSearchList = new ArrayList<Integer>();
+        upSearchListNumber = new ArrayList<Integer>();
         for(int i = 0; i < searchSize; i++ ) {
             searchList.add(allList.get(start + i));
             searchListNumber.add(start + i);
+        }
+        for(int j = searchSize - 1; j >= 0; j--) {
+            upSearchList.add(searchList.get(j));
+            upSearchListNumber.add(searchListNumber.get(j));
         }
     }
 }
