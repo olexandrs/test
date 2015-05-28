@@ -49,7 +49,10 @@ public class Table {
         columns.setCount(30);
     }
 
-    public void fillTable(ArrayList<ArrayList<String>> result, int searchSize) throws  IOException {
+    public void fillTable(ArrayList<ArrayList<String>> result
+            , ArrayList<ArrayList<Integer>> resultValue
+            , ArrayList<ArrayList<Integer>> delta
+            , int searchSize) throws  IOException {
 
         CTTableColumn column;
         XSSFRow row;
@@ -64,11 +67,25 @@ public class Table {
             //Create row
             row = sheet.createRow(count + 1);
             count++;
+            int k = 0;
             for(int j = 0; j < result.size(); j++) {
                 //Create cell
-                cell = row.createCell(j);
+                cell = row.createCell(k);
+                ArrayList<Integer> val = resultValue.get(j);
+                cell.setCellValue(val.get(i) + "  C");
+                k++;
+
+                //Create cell
+                cell = row.createCell(k);
+                ArrayList<Integer> deltas = delta.get(j);
+                cell.setCellValue(deltas.get(i) + "  delta");
+                k++;
+
+                //Create cell
+                cell = row.createCell(k);
                 ArrayList<String> res = result.get(j);
                 cell.setCellValue(res.get(i));
+                k++;
             }
         }
     }

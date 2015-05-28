@@ -25,6 +25,10 @@ public class Weather {
     private ArrayList<Integer> upSearchListNumber = new ArrayList<Integer>();
     private ArrayList<ArrayList<Integer>> globalResult = new ArrayList<ArrayList<Integer>>();
     private ArrayList<ArrayList<Integer>> upGlobalResult = new ArrayList<ArrayList<Integer>>();
+    private ArrayList<ArrayList<Integer>> globalResultValue = new ArrayList<ArrayList<Integer>>();
+    private ArrayList<ArrayList<Integer>> delta = new ArrayList<ArrayList<Integer>>();
+    private ArrayList<Integer> emptyDelta;
+    private ArrayList<ArrayList<Integer>> upGlobalResultValue = new ArrayList<ArrayList<Integer>>();
     private ArrayList<Integer> startDays = new ArrayList<Integer>();
     private ArrayList<Integer> endDays = new ArrayList<Integer>();
 
@@ -70,11 +74,12 @@ public class Weather {
     public void find() throws IOException {
 
         initStartAndEndDate();
+        prepareEmptyDelta();
         file.readAllDataFromFile(allList);
         file.readDatesFromFile(datesList);
 
-        for(int first = 0; first < 12; first++) {
-            for(int second = 0 + first; second < 12; second++) {
+        for(int first = 0; first < 1; first++) {
+            for(int second = 0 + first; second < 1; second++) {
                 table = new Table();
                 startSearch = startDays.get(first);
                 endSearch = endDays.get(first);
@@ -93,11 +98,11 @@ public class Weather {
     private void search() throws IOException {
         downSearch();
         if(globalResult.size() > 1) {
-            table.fillTable(prepareResult(globalResult), searchSize);
+            table.fillTable(prepareResult(globalResult), globalResultValue, delta, searchSize);
         }
         upSearch();
         if(upGlobalResult.size() > 1) {
-            table.fillTable(prepareResult(upGlobalResult), searchSize);
+            table.fillTable(prepareResult(upGlobalResult), upGlobalResultValue, delta, searchSize);
         }
     }
 
@@ -116,9 +121,14 @@ public class Weather {
 
     private void upSearch() {
         upGlobalResult = new ArrayList<ArrayList<Integer>>();
+        upGlobalResultValue = new ArrayList<ArrayList<Integer>>();
+        delta = new ArrayList<ArrayList<Integer>>();
         ArrayList<Integer> resultList = new ArrayList<Integer>();
         ArrayList<Integer> values = new ArrayList<Integer>();
+        ArrayList<Integer> delt = new ArrayList<Integer>();
         upGlobalResult.add(upSearchListNumber);
+        upGlobalResultValue.add(upSearchList);
+        delta.add(emptyDelta);
         for (int i = startList; i < endList; i++) {
             for (int j = 0; j < upSearchList.size(); j++) {
                 if (i + j > endList - 1) {
@@ -129,6 +139,7 @@ public class Weather {
                 Integer newDelta = fromAll - fromSearch;
                 if (currentDelta == maxDelta) {
                     currentDelta = newDelta;
+                    delt.add(newDelta);
                     values.add(allList.get(i + j));
                     resultList.add(i + j);
                     continue;
@@ -136,18 +147,24 @@ public class Weather {
                 if (newDelta - shift <= currentDelta && currentDelta <= newDelta + shift) {
                     resultList.add(i + j);
                     values.add(allList.get(i + j));
+                    delt.add(newDelta);
                 } else {
                     resultList.clear();
                     values.clear();
+                    delt.clear();
+
                     currentDelta = maxDelta;
                     break;
                 }
                 if (j >= upSearchList.size() - 1) {
                     if(needToAdd(values, upSearchList)) {
                         upGlobalResult.add(resultList);
+                        upGlobalResultValue.add(values);
+                        delta.add(delt);
                     }
                     resultList = new ArrayList<Integer>();
                     values = new ArrayList<Integer>();
+                    delt = new ArrayList<Integer>();
                     currentDelta = maxDelta;
                     break;
                 }
@@ -155,14 +172,21 @@ public class Weather {
         }
         if(upGlobalResult.size() == 1) {
             upGlobalResult = new ArrayList<ArrayList<Integer>>();
+            upGlobalResultValue = new ArrayList<ArrayList<Integer>>();
+            delta = new ArrayList<ArrayList<Integer>>();
         }
     }
 
     private void downSearch() {
         globalResult = new ArrayList<ArrayList<Integer>>();
+        globalResultValue = new ArrayList<ArrayList<Integer>>();
+        delta = new ArrayList<ArrayList<Integer>>();
         ArrayList<Integer> resultList = new ArrayList<Integer>();
         ArrayList<Integer> values = new ArrayList<Integer>();
+        ArrayList<Integer> delt = new ArrayList<Integer>();
         globalResult.add(searchListNumber);
+        globalResultValue.add(searchList);
+        delta.add(emptyDelta);
         for (int i = startList; i < endList; i++) {
             for (int j = 0; j < searchList.size(); j++) {
                 if (i + j > endList - 1) {
@@ -175,23 +199,29 @@ public class Weather {
                     currentDelta = newDelta;
                     values.add(allList.get(i + j));
                     resultList.add(i + j);
+                    delt.add(newDelta);
                     continue;
                 }
                 if (newDelta - shift <= currentDelta && currentDelta <= newDelta + shift) {
                     resultList.add(i + j);
                     values.add(allList.get(i + j));
+                    delt.add(newDelta);
                 } else {
                     resultList.clear();
                     values.clear();
+                    delt.clear();
                     currentDelta = maxDelta;
                     break;
                 }
                 if (j >= searchList.size() - 1) {
                     if(needToAdd(values, searchList)) {
                         globalResult.add(resultList);
+                        globalResultValue.add(values);
+                        delta.add(delt);
                     }
                     resultList = new ArrayList<Integer>();
                     values = new ArrayList<Integer>();
+                    delt = new ArrayList<Integer>();
                     currentDelta = maxDelta;
                     break;
                 }
@@ -199,6 +229,8 @@ public class Weather {
         }
         if(globalResult.size() == 1) {
             globalResult = new ArrayList<ArrayList<Integer>>();
+            globalResultValue = new ArrayList<ArrayList<Integer>>();
+            delta = new ArrayList<ArrayList<Integer>>();
         }
     }
 
@@ -223,6 +255,13 @@ public class Weather {
         for(int j = searchSize - 1; j >= 0; j--) {
             upSearchList.add(searchList.get(j));
             upSearchListNumber.add(searchListNumber.get(j));
+        }
+    }
+
+    private void prepareEmptyDelta() {
+        emptyDelta = new ArrayList<Integer>();
+        for(int i = 0; i < 100; i++) {
+            emptyDelta.add(0);
         }
     }
 }
