@@ -78,8 +78,8 @@ public class Weather {
         file.readAllDataFromFile(allList);
         file.readDatesFromFile(datesList);
 
-        for(int first = 0; first < 1; first++) {
-            for(int second = 0 + first; second < 1; second++) {
+        for(int first = 0; first < 12; first++) {
+            for(int second = 0 + first; second < 12; second++) {
                 table = new Table();
                 startSearch = startDays.get(first);
                 endSearch = endDays.get(first);
