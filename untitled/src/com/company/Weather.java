@@ -12,7 +12,7 @@ public class Weather {
     private final Integer shift = 2;
 
     private Integer currentDelta = maxDelta;
-    private Integer searchSize = 14;
+    private Integer searchSize = 24;
 
     private TextFile file = new TextFile();
     private Table table = new Table();
@@ -40,6 +40,8 @@ public class Weather {
     private Integer endSearch;
     private Integer startList;
     private Integer endList;
+
+    private boolean shouldSave = false;
 
 
     private void initStartAndEndDate() {
@@ -80,6 +82,7 @@ public class Weather {
 
         for(int first = 0; first < 12; first++) {
             for(int second = 0 + first; second < 12; second++) {
+                shouldSave = false;
                 table = new Table();
                 startSearch = startDays.get(first);
                 endSearch = endDays.get(first);
@@ -89,7 +92,9 @@ public class Weather {
                     initSearchList(i);
                     search();
                 }
-                table.save((startYear + first) + " - " + (endYear + second) + ".xlsx");
+                if(shouldSave) {
+                    table.save((startYear + first) + " - " + (endYear + second) + ".xlsx");
+                }
             }
         }
     //    file.closeBufferedWriter();
@@ -99,10 +104,12 @@ public class Weather {
         downSearch();
         if(globalResult.size() > 1) {
             table.fillTable(prepareResult(globalResult), globalResultValue, delta, searchSize);
+            shouldSave = true;
         }
         upSearch();
         if(upGlobalResult.size() > 1) {
             table.fillTable(prepareResult(upGlobalResult), upGlobalResultValue, delta, searchSize);
+            shouldSave = true;
         }
     }
 
