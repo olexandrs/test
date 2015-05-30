@@ -12,7 +12,7 @@ public class Weather {
     private final Integer shift = 2;
 
     private Integer currentDelta = maxDelta;
-    private Integer searchSize = 24;
+    private Integer searchSize = 6;
 
     private TextFile file = new TextFile();
     private Table table = new Table();
@@ -46,30 +46,30 @@ public class Weather {
 
     private void initStartAndEndDate() {
         startDays.add(0);
-        startDays.add(670);
-        startDays.add(1400);
-        startDays.add(2130);
-        startDays.add(2860);
-        startDays.add(3592);
-        startDays.add(4322);
-        startDays.add(5052);
-        startDays.add(5782);
-        startDays.add(6514);
-        startDays.add(7244);
-        startDays.add(7974);
+        startDays.add(732);
+        startDays.add(1462);
+        startDays.add(2192);
+        startDays.add(2922);
+        startDays.add(3654);
+        startDays.add(4384);
+        startDays.add(5114);
+        startDays.add(5844);
+        startDays.add(6576);
+        startDays.add(7306);
+        startDays.add(8036);
 
-        endDays.add(669);
-        endDays.add(1399);
-        endDays.add(2129);
-        endDays.add(2859);
-        endDays.add(3591);
-        endDays.add(4321);
-        endDays.add(5051);
-        endDays.add(5781);
-        endDays.add(6513);
-        endDays.add(7243);
-        endDays.add(7973);
-        endDays.add(8243);
+        endDays.add(770);
+        endDays.add(1500);
+        endDays.add(2230);
+        endDays.add(2960);
+        endDays.add(3692);
+        endDays.add(4422);
+        endDays.add(5151);
+        endDays.add(5881);
+        endDays.add(6613);
+        endDays.add(7343);
+        endDays.add(8073);
+        endDays.add(8334);
     }
 
 
@@ -267,7 +267,7 @@ public class Weather {
 
     private void prepareEmptyDelta() {
         emptyDelta = new ArrayList<Integer>();
-        for(int i = 0; i < 100; i++) {
+        for(int i = 0; i < 1; i++) {
             emptyDelta.add(0);
         }
     }

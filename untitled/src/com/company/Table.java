@@ -34,7 +34,7 @@ public class Table {
         //Create
         XSSFTable table = sheet.createTable();
         sheet.setDefaultColumnWidth(23);
-        //table.setDisplayName("Test");
+        table.setDisplayName("Test");
         CTTable cttable = table.getCTTable();
 
         //Set which area the table should be placed in
@@ -76,10 +76,12 @@ public class Table {
                 k++;
 
                 //Create cell
-                cell = row.createCell(k);
-                ArrayList<Integer> deltas = delta.get(j);
-                cell.setCellValue(deltas.get(i) + "  delta");
-                k++;
+                if(j != 0) {
+                    cell = row.createCell(k);
+                    ArrayList<Integer> deltas = delta.get(j);
+                    cell.setCellValue(deltas.get(i) + "  delta");
+                    k++;
+                }
 
                 //Create cell
                 cell = row.createCell(k);
